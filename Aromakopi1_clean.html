@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aroma Kopi - Premium Coffee Bubuk</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(139, 69, 19, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: #FFD700;
+            font-size: 2rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 215, 0, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .cart-btn {
+            position: relative;
+            background: rgba(255, 215, 0, 0.2);
+            color: white;
+            border: 2px solid #FFD700;
+            padding: 0.7rem;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .cart-btn:hover {
+            background: #FFD700;
+            color: #8B4513;
+            transform: scale(1.1);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ff4757;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .login-btn {
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: #8B4513;
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #fff 0%, #f8f8f8 100%);
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #8B4513;
+        }
+
+        /* Cart Modal */
+        .cart-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            gap: 1rem;
+        }
+
+        .cart-item img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #8B4513, #D2691E);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            font-weight: bold;
+            color: #8B4513;
+        }
+
+        .cart-item-price {
+            color: #D2691E;
+            font-weight: 600;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0.5rem 0;
+        }
+
+        .qty-btn {
+            background: #8B4513;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qty-btn:hover {
+            background: #D2691E;
+        }
+
+        .remove-btn {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .cart-total {
+            text-align: center;
+            padding: 1rem;
+            background: #f8f8f8;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            background: linear-gradient(45deg, #8B4513, #D2691E);
+            color: white;
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .checkout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 69, 19, 0.3);
+        }
+
+        /* Order Form */
+        .order-form {
+            margin-top: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #8B4513;
+            font-weight: 600;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #FFD700;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+
+        .form-submit {
+            width: 100%;
+            background: linear-gradient(45deg, #8B4513, #D2691E);
+            color: white;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .form-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 69, 19, 0.3);
+        }
+
+        /* Product Cards */
+        .product-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .product-image {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(45deg, #8B4513, #D2691E);
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            object-fit: cover;
+        }
+
+        .price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #FFD700;
+            margin: 1rem 0;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .add-to-cart, .buy-now {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .add-to-cart {
+            background: rgba(255, 215, 0, 0.2);
+            color: #FFD700;
+            border: 2px solid #FFD700;
+        }
+
+        .add-to-cart:hover {
+            background: #FFD700;
+            color: #8B4513;
+        }
+
+        .buy-now {
+            background: linear-gradient(45deg, #ff4757, #ff3742);
+            color: white;
+        }
+
+        .buy-now:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 71, 87, 0.3);
+        }
+
+        /* Main Content */
+        .main {
+            margin-top: 80px;
+            min-height: calc(100vh - 80px);
+        }
+
+        .page {
+            display: none;
+            padding: 2rem 0;
+            color: white;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .page h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        /* Hero Section */
+        .home-page {
+            display: block;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-top: 4rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease 0.2s both;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 3rem 0;
+        }
+
+      
+        /* About Page */
+        .about-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Contact Page */
+        .contact-form {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        
+        /* Payment & Shipping Info */
+        .info-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 20px;
+            margin: 2rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .info-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+/* ==== RESPONSIVE LAYOUT ==== */
+@media (max-width: 768px) {
+    /* Navigasi */
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    .nav-links.hidden {
+        display: none !important;
+    }
+
+    .nav-actions {
+        gap: 0.5rem;
+        flex-direction: column;
+    }
+
+    /* Hero Section */
+    .hero h1 {
+        font-size: 2rem;
+        text-align: center;
+    }
+
+    .hero p {
+        font-size: 1rem;
+        text-align: center;
+    }
+
+    /* Fitur */
+    .features {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    /* Produk & Keranjang */
+    .product-actions,
+    .cart-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .product-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Modal */
+    .modal-content {
+        width: 95%;
+        padding: 1rem;
+    }
+
+    /* Icon dan Pesan */
+    .cart-item-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(45deg, #8B4513, #D2691E);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+    }
+
+    .empty-cart {
+        text-align: center;
+        padding: 2rem;
+        color: #666;
+    }
+
+    .success-message {
+        background: #d4edda;
+        color: #155724;
+        padding: 1rem;
+        border-radius: 10px;
+        margin: 1rem 0;
+        text-align: center;
+    }
+}
+
+/* ==== RESPONSIVE KHUSUS HP KECIL (≤ 480px) ==== */
+@media (max-width: 480px) {
+    body {
+        overflow-x: hidden;
+    }
+
+    .container {
+        padding: 0 1rem;
+    }
+
+    .nav-links {
+        font-size: 0.95rem;
+    }
+
+    .modal-content {
+        width: 95%;
+        padding: 1rem;
+    }
+
+    .product-image {
+        width: 100%;
+        max-width: 150px;
+        height: auto;
+        display: block;
+        margin: 0 auto;
+    }
+
+    .price {
+        font-size: 1.2rem;
+    }
+
+    .login-btn,
+    .form-submit {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+    }
+
+    .feature-icon {
+        font-size: 2rem;
+    }
+}
+</style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <div class="logo">☕ Aroma Kopi</div>
+                <ul class="nav-links hidden" id="navLinks">
+                    <li><a href="#" onclick="showPage('home'); toggleNav();">Beranda</a></li>
+                    <li><a href="#" onclick="showPage('about'); toggleNav();">Tentang</a></li>
+                    <li><a href="#" onclick="showPage('products'); toggleNav();">Produk</a></li>
+                    <li><a href="#" onclick="showPage('contact'); toggleNav();">Kontak</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <button class="cart-btn" id="cartBtn" onclick="openCart()" style="display: none;">
+                        🛒
+                        <span class="cart-count" id="cartCount">0</span>
+                    </button>
+                </div>
+                <div class="nav-actions" id="authButtons">
+                 <button class="login-btn" id="loginBtn" onclick="openModal()">Login</button>
+                 <button class="login-btn" id="registerBtn" onclick="openRegisterModal()">Daftar</button>
+                 </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <center><h2 style="color: #8B4513; margin-bottom: 1rem;">Login</h2></center>
+            <form class="login-form" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="form-submit">Masuk</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeRegisterModal()">&times;</span>
+        <center><h2 style="color: #8B4513; margin-bottom: 1rem;">Daftar Akun Baru</h2></center>
+        <form class="login-form" onsubmit="handleRegister(event)">
+            <div class="form-group">
+                <label for="regUsername">Username:</label>
+                <input type="text" id="regUsername" name="regUsername" required>
+            </div>
+            <div class="form-group">
+                <label for="regEmail">Email:</label>
+                <input type="email" id="regEmail" name="regEmail" required>
+            </div>
+            <div class="form-group">
+                <label for="regPassword">Password:</label>
+                <input type="password" id="regPassword" name="regPassword" required>
+            </div>
+            <button type="submit" class="form-submit">Daftar</button>
+        </form>
+    </div>
+</div>
+
+
+    <!-- Cart Modal -->
+    <div id="cartModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeCart()">&times;</span>
+            <h2 style="color: #8B4513; margin-bottom: 1rem; text-align: center;">Keranjang Belanja</h2>
+            <div id="cartItems"></div>
+            <div class="cart-total" id="cartTotal" style="display: none;">
+                <h3>Total: Rp <span id="totalAmount">0</span></h3>
+            </div>
+            <button class="checkout-btn" id="checkoutBtn" onclick="proceedToCheckout()" style="display: none;">
+                Lanjut ke Pembayaran
+            </button>
+        </div>
+    </div>
+
+    <!-- Order Modal -->
+   <div id="orderModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeOrderModal()">&times;</span>
+    <h2 style="text-align: center; color: #8B4513;">Konfirmasi Pesanan</h2>
+
+    <div id="orderSummary" class="order-summary"></div>
+
+    <form id="orderForm" class="order-form" onsubmit="handleOrder(event)">
+      <div class="form-group">
+        <label for="customerName">Nama Lengkap</label>
+        <input type="text" id="customerName" required />
+      </div>
+      <div class="form-group">
+        <label for="customerPhone">Nomor Telepon</label>
+        <input type="text" id="customerPhone" required />
+      </div>
+      <div class="form-group">
+        <label for="customerAddress">Alamat Pengiriman</label>
+        <textarea id="customerAddress" required></textarea>
+      </div>
+      <div class="form-group">
+  <label for="cityZone">Zona Kota</label>
+  <select id="cityZone" onchange="updateShippingCost()" required>
+    <option value="dalam">Dalam Kota</option>
+    <option value="sekitar">Sekitar Kota</option>
+    <option value="luar">Luar Kota</option>
+  </select>
+</div>
+
+      <div class="form-group">
+        <label for="paymentMethod">Metode Pembayaran</label>
+        <select id="paymentMethod" required>
+          <option value="Transfer Bank">Transfer Bank</option>
+          <option value="COD">Bayar di Tempat (COD)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="shippingMethod">Metode Pengiriman</label>
+        <select id="shippingMethod" onchange="updateShippingCost()" required>
+          <option value="jne">JNE</option>
+          <option value="pos">POS</option>
+          <option value="jnt">J&T</option>
+          <option value="sicepat">SiCepat</option>
+          <option value="pickup">Ambil Langsung</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="orderNotes">Catatan (Opsional)</label>
+        <textarea id="orderNotes" ></textarea>
+      </div>
+
+       <div class="cart-total">
+      <p>Subtotal: Rp <span id="orderSubtotal">0</span></p>
+      <p>Ongkir: Rp <span id="shippingCost">0</span></p>
+      <hr />
+      <p><strong>Total: Rp <span id="orderTotal">0</span></strong></p>
+    </div>
+
+      <button type="submit" class="form-submit">Kirim Pesanan via WhatsApp</button>
+    </form>
+  </div>
+</div>
+
+    <main class="main">
+        <div class="container">
+            <!-- Home Page -->
+            <div id="homePage" class="home-page">
+                <section class="hero">
+                    <h1>Selamat Datang di Aroma Kopi</h1>
+                    <p>Nikmati Cita Rasa Kopi Premium Indonesia Terbaik</p>
+                    <p style="font-size: 1rem; margin-top: 2rem; opacity: 0.8;">
+                        Silahkan daftar dan login untuk mengakses informasi lengkap dan berbelanja
+                    </p>
+                </section>
+            </div>
+
+            <!-- About Page -->
+            <div id="aboutPage" class="page">
+                <h2>Tentang Aroma Kopi</h2>
+                <div class="about-content">
+                    <h3>Sejarah Kami</h3>
+                    <p>Kopi pertama kali ditemukan di Ethiopia, di mana biji kopi tumbuh liar. Menurut legenda, seorang penggembala kambing bernama Kaldi menemukan bahwa kambing-kambingnya menjadi lebih energik setelah memakan buah dari semak kopi. Penemuan ini menyebar ke biara, di mana para pendeta mulai menggunakan kopi untuk tetap terjaga saat berdoa. Pada abad ke-15, kopi mulai ditanam dan diperdagangkan di Yaman, dan menjadi populer di Timur Tengah, terutama di kedai kopi.</p>
+                    <h3 style="margin-top: 2rem;">Visi & Misi</h3>
+                    <p><strong>Visi:</strong> Menjadi brand kopi bubuk premium terdepan di Indonesia</p>
+                    <p><strong>Misi:</strong> Menyajikan kopi berkualitas tinggi sambil mendukung kesejahteraan petani lokal</p>
+                    
+                    <h3 style="margin-top: 2rem;">Mengapa Memilih Kami?</h3>
+                    <ul style="margin-left: 2rem; margin-top: 1rem;">
+                        <li>Kualitas premium dengan harga terjangkau</li>
+                        <li>Kemitraan langsung dengan petani</li>
+                        <li>Proses roasting yang sempurna</li>
+                        <li>Kemasan yang menjaga kesegaran</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Products Page -->
+            <div id="productsPage" class="page">
+                <h2>Produk Kami</h2>
+                <div class="product-grid">
+                    <div class="product-card">
+                        <div class="product-image">☕</div>
+                        <h3>Kopi Arabika Premium</h3>
+                        <p>Kopi arabika pilihan dari dataran tinggi Aceh dengan cita rasa yang khas dan aroma yang menggoda.</p>
+                        <div class="price">Rp 75.000</div>
+                        <p><em>Kemasan 250g</em></p>
+                        <div class="product-actions">
+                            <button class="add-to-cart" onclick="addToCart('Kopi Arabika Premium', 75000, '☕')">+ Keranjang</button>
+                            <button class="buy-now" onclick="buyNow('Kopi Arabika Premium', 75000, '☕')">Beli Sekarang</button>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-image">☕</div>
+                        <h3>Kopi Robusta Original</h3>
+                        <p>Robusta asli Lampung dengan karakteristik bold dan body yang kuat, cocok untuk pecinta kopi strong.</p>
+                        <div class="price">Rp 65.000</div>
+                        <p><em>Kemasan 250g</em></p>
+                        <div class="product-actions">
+                            <button class="add-to-cart" onclick="addToCart('Kopi Robusta Original', 65000, '☕')">+ Keranjang</button>
+                            <button class="buy-now" onclick="buyNow('Kopi Robusta Original', 65000, '☕')">Beli Sekarang</button>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-image">☕</div>
+                        <h3>Blend House Special</h3>
+                        <p>Campuran istimewa arabika dan robusta dengan perbandingan sempurna untuk rasa yang seimbang.</p>
+                        <div class="price">Rp 70.000</div>
+                        <p><em>Kemasan 250g</em></p>
+                        <div class="product-actions">
+                            <button class="add-to-cart" onclick="addToCart('Blend House Special', 70000, '☕')">+ Keranjang</button>
+                            <button class="buy-now" onclick="buyNow('Blend House Special', 70000, '☕')">Beli Sekarang</button>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                       <div class="product-image">☕</div>
+                        <h3>Kopi Luwak Premium</h3>
+                        <p>Kopi luwak asli dengan proses alami yang menghasilkan cita rasa unik dan eksklusif.</p>
+                        <div class="price">Rp 150.000</div>
+                        <p><em>Kemasan 100g</em></p>
+                        <div class="product-actions">
+                            <button class="add-to-cart" onclick="addToCart('Kopi Luwak Premium', 150000, '☕')">+ Keranjang</button>
+                            <button class="buy-now" onclick="buyNow('Kopi Luwak Premium', 150000, '☕')">Beli Sekarang</button>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                      <div class="product-image">☕</div>
+                        <h3>Toraja Highland</h3>
+                        <p>Kopi dari tanah Toraja yang terkenal dengan karakteristik earthy dan full body yang memukau.</p>
+                        <div class="price">Rp 85.000</div>
+                        <p><em>Kemasan 250g</em></p>
+                        <div class="product-actions">
+                            <button class="add-to-cart" onclick="addToCart('Toraja Highland', 85000, '☕')">+ Keranjang</button>
+                            <button class="buy-now" onclick="buyNow('Toraja Highland', 85000, '☕')">Beli Sekarang</button>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                       <div class="product-image">☕</div>
+                        <h3>Mandailing Gold</h3>
+                        <p>Kopi premium dari Mandailing dengan tingkat keasaman yang pas dan after taste yang panjang.</p>
+                        <div class="price">Rp 80.000</div>
+                        <p><em>Kemasan 250g</em></p>
+                        <div class="product-actions">
+                            <button class="add-to-cart" onclick="addToCart('Mandailing Gold', 80000, '☕')">+ Keranjang</button>
+                            <button class="buy-now" onclick="buyNow('Mandailing Gold', 80000, '☕')">Beli Sekarang</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment & Shipping Page -->
+            <div id="paymentPage" class="page">
+                <h2>Pembayaran & Pengiriman</h2>
+                
+                <div class="info-section">
+                    <h3 style="text-align: center; margin-bottom: 2rem;">💳 Metode Pembayaran</h3>
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <span class="info-icon">🏦</span>
+                            <h4>Transfer Bank</h4>
+                            <p>BCA: 1234567890<br>Mandiri: 9876543210<br>BRI: 5647382910<br>a.n. Aroma Kopi</p>
+                        </div>
+                        <div class="info-card">
+                            <span class="info-icon">💰</span>
+                            <h4>Bayar di Tempat (COD)</h4>
+                            <p>Tersedia untuk area Makassar<br>Biaya tambahan Rp 5.000<br>Pembayaran tunai kepada kurir</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <h3 style="text-align: center; margin-bottom: 2rem;">🚚 Metode Pengiriman</h3>
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <span class="info-icon">📦</span>
+                            <h4>JNE Regular</h4>
+                            <p>Estimasi: 2-3 hari<br>Biaya: Rp 25.000<br>Tersedia ke seluruh Indonesia</p>
+                        </div>
+                        <div class="info-card">
+                            <span class="info-icon">📮</span>
+                            <h4>Pos Indonesia</h4>
+                            <p>Estimasi: 3-5 hari<br>Biaya: Rp 12.000<br>Ekonomis dan terpercaya</p>
+                        </div>
+                        <div class="info-card">
+                            <span class="info-icon">⚡</span>
+                            <h4>J&T Express</h4>
+                            <p>Estimasi: 2-3 hari<br>Biaya: Rp 13.000<br>Tracking real-time</p>
+                        </div>
+                        <div class="info-card">
+                            <span class="info-icon">🚀</span>
+                            <h4>SiCepat</h4>
+                            <p>Estimasi: 1-2 hari<br>Biaya: Rp 50.000<br>Pengiriman tercepat</p>
+                        </div>
+                        <div class="info-card">
+                            <span class="info-icon">🏪</span>
+                            <h4>Ambil di Toko</h4>
+                            <p>Alamat: Jl. Sosial Pondok Kuning<br>Jam: 08:00-18:00 WIB<br>GRATIS - Tanpa biaya tambahan</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Page -->
+            <div id="contactPage" class="page">
+                <h2>Hubungi Kami</h2>
+                <div class="contact-form">     
+                    <div style="margin-top: 20px; text-align: center; padding-bottom:20px">
+                        <h3>Informasi Kontak</h3>
+                        <p>📱 WhatsApp: +62 823-1289-3024</p>
+                        <p>📧 Email: info@aromakopi.com</p>
+                        <p>📍 Alamat: Jl. Sosial Pondok Kuning, Parepare</p>
+                        <p>🕒 Jam Operasional: Senin-Sabtu, 08:00-18:00 WIB</p>
+                        <p>📦 Jam Pengiriman: Senin-Jumat, 14:00 WIB</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    
+<script src="main.js"></script>
+</body>
+</html>
+                
